@@ -1,11 +1,11 @@
 {
   "extensionName": {
-    "message": "Menu demo",
+    "message": "jsproxy-FFEXT",
     "description": "Name of the extension."
   },
 
   "extensionDescription": {
-    "message": "Demonstrates the menus API.",
+    "message": "A extension for jsproxy. ",
     "description": "Description of the add-on."
   },
 

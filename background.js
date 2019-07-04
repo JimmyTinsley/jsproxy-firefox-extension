@@ -36,15 +36,14 @@ browser.menus.create({
 }, onCreated);
 
 /*
-Attach prefix `https://proxy.jimmytinsley.workers.dev/-----` before the url got from link or selectionText,
+Attach prefix obtained from preference before the url got from link or selectionText,
 and then open the combined url in a new browser tab.
 If selected text is not a url, jsproxy will automatically google it. :D
 */
-
-//TODO Create a management page for jsproxy url and other general settings.
-var jsproxy_prefix = 'https://proxy.jimmytinsley.workers.dev/-----';
-
-function openWithProxy(info) {
+async function openWithProxy(info) {
+  var gotItem = await browser.storage.sync.get('jsproxy_sandbox_url');
+  var jsproxy_prefix = gotItem.jsproxy_sandbox_url; 
+  console.log(jsproxy_prefix);
   var current_url;
   if (info.linkUrl !== undefined) {
     current_url = info.linkUrl;
@@ -52,13 +51,13 @@ function openWithProxy(info) {
     current_url = info.selectionText;
   }
   var creating = browser.tabs.create({
-    url:jsproxy_prefix + current_url
+    url: jsproxy_prefix + "-----" + current_url
   });
   creating.then(onCreated, onError);
 }
 
 /*
-The click event listener, where we perform the appropriate action given the
+The click event listener for menus, where we perform the appropriate action given the
 ID of the menu item that was clicked.
 */
 browser.menus.onClicked.addListener((info, tab) => {
@@ -68,3 +67,16 @@ browser.menus.onClicked.addListener((info, tab) => {
       break;
   }
 });
+
+/*
+Called when the toolbar button has been clicked.
+*/
+function handleClick() {
+  browser.runtime.openOptionsPage();
+}
+
+/*
+Click event listener for toolbar button. 
+*/
+browser.browserAction.onClicked.addListener(handleClick);
+
