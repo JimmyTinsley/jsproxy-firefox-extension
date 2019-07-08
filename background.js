@@ -43,12 +43,15 @@ If selected text is not a url, jsproxy will automatically google it. :D
 async function openWithProxy(info) {
   var gotItem = await browser.storage.sync.get('jsproxy_sandbox_url');
   var jsproxy_prefix = gotItem.jsproxy_sandbox_url; 
+  if (jsproxy_prefix.slice(-1) !== "/") {
+    jsproxy_prefix = jsproxy_prefix + "/";
+  }
   console.log(jsproxy_prefix);
   var current_url;
-  if (info.linkUrl !== undefined) {
-    current_url = info.linkUrl;
-  } else {
+  if (info.selectionText !== undefined) {
     current_url = info.selectionText;
+  } else {
+    current_url = info.linkUrl;
   }
   var creating = browser.tabs.create({
     url: jsproxy_prefix + "-----" + current_url
