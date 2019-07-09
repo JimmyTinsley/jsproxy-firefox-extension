@@ -10,7 +10,12 @@
   },
 
   "menuItemOpenWithProxy": {
-    "message": "Open or search with jsproxy",
+    "message": "Open with jsproxy",
     "description": "Title of the context menu item that allows you to open a url with jsproxy."
+  },
+
+  "menuItemSearchWithProxy": {
+    "message": "Search with Google",
+    "description": "Title of the context menu item that allows you to search a keyword with Google."
   }
 }
