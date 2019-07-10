@@ -56,8 +56,7 @@ async function getJsproxyPrefix() {
 /*
 Open the clicked link with jsproxy by attaching a prefix before the link's url.
 */
-async function openWithProxy(info) {
-  var jsproxy_prefix = await getJsproxyPrefix();
+function openWithProxy(info, jsproxy_prefix) {
   var creating = browser.tabs.create({
     url: jsproxy_prefix + "-----" + info.linkUrl
   });
@@ -67,8 +66,7 @@ async function openWithProxy(info) {
 /*
 Search the selected keyword with jsproxy-Google by attaching a prefix before selected text.
 */
-async function searchWithProxy(info) {
-  var jsproxy_prefix = await getJsproxyPrefix();
+function searchWithProxy(info, jsproxy_prefix) {
   var creating = browser.tabs.create({
     url: jsproxy_prefix + "-----" + info.selectionText
   });
@@ -79,15 +77,17 @@ async function searchWithProxy(info) {
 The click event listener for menus, where we perform the appropriate action given the
 ID of the menu item that was clicked.
 */
-browser.menus.onClicked.addListener((info, tab) => {
+browser.menus.onClicked.addListener(async function(info) {
+  var jsproxy_prefix = await getJsproxyPrefix();
   switch (info.menuItemId) {
     case "open-with-proxy":
-      openWithProxy(info);
+      openWithProxy(info, jsproxy_prefix);
       break;
     case "search-with-proxy":
-      searchWithProxy(info);
+      searchWithProxy(info, jsproxy_prefix);
       break;
   }
+  
 });
 
 /*
