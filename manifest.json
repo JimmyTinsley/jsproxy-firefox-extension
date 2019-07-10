@@ -20,7 +20,8 @@
   "permissions": [
     "menus",
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   
   "icons": {
@@ -33,7 +34,18 @@
     "page": "options.html",
     "browser_style": true
   },
+
   "browser_action": {
-      "default_title": "jsproxy-FFEXT"
+    "default_title": "jsproxy-FFEXT"
+  },
+
+  "page_action": {
+    "browser_style": true,
+    "default_icon": {
+      "19": "icons/geo-19.png",
+      "38": "icons/geo-38.png"
+    },
+    "default_title": "__MSG_pageAction__",
+    "show_matches": ["<all_urls>"]
   }
 }

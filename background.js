@@ -11,14 +11,6 @@ function onCreated() {
 }
 
 /*
-Called when the item has been removed.
-We'll just log success here.
-*/
-function onRemoved() {
-  console.log("Item removed successfully");
-}
-
-/*
 Called when there was an error.
 We'll just log the error here.
 */
@@ -93,12 +85,62 @@ browser.menus.onClicked.addListener(async function(info) {
 /*
 Called when the toolbar button has been clicked.
 */
-function handleClick() {
+function handleBrowserActionClick() {
   browser.runtime.openOptionsPage();
 }
 
 /*
 Click event listener for toolbar button. 
 */
-browser.browserAction.onClicked.addListener(handleClick);
+browser.browserAction.onClicked.addListener(handleBrowserActionClick);
 
+/*
+Called when the tab page has been updated.
+*/
+function onUpdated(tab) {
+  console.log(`Updated tab: ${tab.id}`);
+}
+
+/*
+Page action click event listener that switches on/off jsproxy for current tab page.
+*/
+browser.pageAction.onClicked.addListener(async function(tab) {
+  var jsproxy_prefix = await getJsproxyPrefix();
+  if (tab.url.slice(0, jsproxy_prefix.length) == jsproxy_prefix) {
+    var updating = browser.tabs.update({url: tab.url.substring(jsproxy_prefix.length+5, tab.url.length)});
+    updating.then(onUpdated, onError);
+  } else {
+    var updating = browser.tabs.update({url: jsproxy_prefix + "-----" + tab.url});
+    updating.then(onUpdated, onError);
+  }
+});
+
+/*
+Returns true only if the URL's protocol is in APPLICABLE_PROTOCOLS.
+*/
+const APPLICABLE_PROTOCOLS = ["http:", "https:"];
+
+function protocolIsApplicable(url) {
+  var anchor =  document.createElement('a');
+  anchor.href = url;
+  return APPLICABLE_PROTOCOLS.includes(anchor.protocol);
+}
+
+/*
+Initialize the page action: set icon and title, then show.
+Only operates on tabs whose URL's protocol is applicable.
+*/
+function initializePageAction(tab) {
+  if (protocolIsApplicable(tab.url)) {
+    browser.pageAction.setIcon({tabId: tab.id, path: "icons/page-16.png"});
+    browser.pageAction.setTitle({tabId: tab.id, title: browser.i18n.getMessage("pageAction")});
+    browser.pageAction.show(tab.id);
+  }
+}
+
+/*
+Each time a tab is updated, reset the page action for that tab.
+*/
+browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+  initializePageAction(tab);
+});
