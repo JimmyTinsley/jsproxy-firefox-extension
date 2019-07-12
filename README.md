@@ -13,7 +13,6 @@ Firefox extension for [jsproxy](https://github.com/EtherDream/jsproxy).
 ## TODO
 - Add more preference settings. 
 - New features.
-- Open new tab to the right of the current tab instead of opening on the rightmost side. 
 
 ## LICENSE
 Apache License 2.0
