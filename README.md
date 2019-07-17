@@ -1,8 +1,9 @@
-# jsproxy-FFEXT
+# jsproxy-firefox-extension
 Firefox extension for [jsproxy](https://github.com/EtherDream/jsproxy).
 
-## Before use
-- Click the button on toolbar and set your jsproxy sandbox url.
+## Before use the extension
+- Make sure you are clear about how to use jsproxy.
+- Click the button on toolbar and set your own jsproxy sandbox url, which was set to `https://jsproxy.gq` by default.
 - Open jsproxy page sandbox at least once to initialize service worker.
 
 ## Use
@@ -12,7 +13,8 @@ Firefox extension for [jsproxy](https://github.com/EtherDream/jsproxy).
 
 ## TODO
 - Add more preference settings. 
-- New features.
+- Implement more features.
+- ...
 
 ## LICENSE
 Apache License 2.0
