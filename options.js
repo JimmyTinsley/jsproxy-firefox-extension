@@ -11,7 +11,15 @@ function saveOptions(e) {
 function restoreOptions() {
   var gettingItem = browser.storage.sync.get('jsproxy_sandbox_url');
   gettingItem.then((res) => {
-    document.querySelector("#jsproxy_sandbox_url").value = res.jsproxy_sandbox_url || 'Please set your jsproxy sandbox url';
+    if (res.jsproxy_sandbox_url !== "") {
+      document.querySelector("#jsproxy_sandbox_url").value = res.jsproxy_sandbox_url;
+    } else {
+      document.querySelector("#jsproxy_sandbox_url").value = "https://jsproxy.gq";
+      browser.storage.sync.set({
+        jsproxy_sandbox_url: document.querySelector("#jsproxy_sandbox_url").value
+      });
+    }
+    // document.querySelector("#jsproxy_sandbox_url").value = res.jsproxy_sandbox_url || 'https://jsproxy.gq';
   });
 }
 
