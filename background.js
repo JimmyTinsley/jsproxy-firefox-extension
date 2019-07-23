@@ -1,23 +1,9 @@
 /*
-Called when the item has been created, or when creation failed due to an error.
-We'll just log success/failure here.
-*/
-function onCreated() {
-  if (browser.runtime.lastError) {
-    console.log(`Error: ${browser.runtime.lastError}`);
-  } else {
-    console.log("Item created successfully");
-  }
-}
+____ ____ _  _ ___ ____ _  _ ___    _  _ ____ _  _ _  _    ____ _  _ _  _ ____ ___ _ ____ _  _ ____
+|    |  | |\ |  |  |___  \/   |     |\/| |___ |\ | |  |    |___ |  | |\ | |     |  | |  | |\ | [__
+|___ |__| | \|  |  |___ _/\_  |     |  | |___ | \| |__|    |    |__| | \| |___  |  | |__| | \| ___]
 
-/*
-Called when there was an error.
-We'll just log the error here.
 */
-function onError(error) {
-  console.log(`Error: ${error}`);
-}
-
 /*
 Create the context menu items.
 */
@@ -40,7 +26,7 @@ browser.menus.create({
 }, onCreated);
 
 /*
-This function obtains jsproxy sandbox url from preferences for further use.
+This function loads jsproxy sandbox url from preferences for further use.
 */
 async function getJsproxyPrefix() {
   var gotItem = await browser.storage.sync.get('jsproxy_sandbox_url');
@@ -50,6 +36,25 @@ async function getJsproxyPrefix() {
   }
   return jsproxy_sandbox_url;
 }
+
+/*
+The click event listener for menus, where we perform the appropriate action given the
+ID of the menu item that was clicked.
+*/
+browser.menus.onClicked.addListener(async function(info) {
+  var jsproxy_prefix = await getJsproxyPrefix();
+  switch (info.menuItemId) {
+    case "open-with-proxy":
+      openWithProxy(info, jsproxy_prefix);
+      break;
+    case "search-with-proxy":
+      searchWithProxy(info, jsproxy_prefix);
+      break;
+    case "open-image-with-proxy":
+      openImageWithJsproxy(info, jsproxy_prefix);
+  }
+  
+});
 
 /*
 Open the clicked link with jsproxy by attaching a prefix before the link's url.
@@ -81,25 +86,13 @@ function openImageWithJsproxy(info, jsproxy_prefix) {
   creating.then(onCreated, onError);
 }
 
-/*
-The click event listener for menus, where we perform the appropriate action given the
-ID of the menu item that was clicked.
-*/
-browser.menus.onClicked.addListener(async function(info) {
-  var jsproxy_prefix = await getJsproxyPrefix();
-  switch (info.menuItemId) {
-    case "open-with-proxy":
-      openWithProxy(info, jsproxy_prefix);
-      break;
-    case "search-with-proxy":
-      searchWithProxy(info, jsproxy_prefix);
-      break;
-    case "open-image-with-proxy":
-      openImageWithJsproxy(info, jsproxy_prefix);
-  }
-  
-});
 
+/*
+___  ____ ____ _ _ _ ____ ____ ____    ____ ____ ___ _ ____ _  _    ____ _  _ _  _ ____ ___ _ ____ _  _ ____
+|__] |__/ |  | | | | [__  |___ |__/    |__| |     |  | |  | |\ |    |___ |  | |\ | |     |  | |  | |\ | [__
+|__] |  \ |__| |_|_| ___] |___ |  \    |  | |___  |  | |__| | \|    |    |__| | \| |___  |  | |__| | \| ___]
+
+*/
 /*
 Called when the toolbar button has been clicked.
 */
@@ -112,25 +105,19 @@ Click event listener for toolbar button.
 */
 browser.browserAction.onClicked.addListener(handleBrowserActionClick);
 
-/*
-Called when the tab page has been updated.
-*/
-function onUpdated(tab) {
-  console.log(`Updated tab: ${tab.id}`);
-}
 
 /*
-Page action click event listener that switches on/off jsproxy for current tab page.
+___  ____ ____ ____    ____ ____ ___ _ ____ _  _    ____ _  _ _  _ ____ ___ _ ____ _  _ ____
+|__] |__| | __ |___    |__| |     |  | |  | |\ |    |___ |  | |\ | |     |  | |  | |\ | [__
+|    |  | |__] |___    |  | |___  |  | |__| | \|    |    |__| | \| |___  |  | |__| | \| ___]
+
 */
-browser.pageAction.onClicked.addListener(async function(tab) {
-  var jsproxy_prefix = await getJsproxyPrefix();
-  if (tab.url.slice(0, jsproxy_prefix.length) == jsproxy_prefix) {
-    var updating = browser.tabs.update({url: tab.url.substring(jsproxy_prefix.length+5, tab.url.length)});
-    updating.then(onUpdated, onError);
-  } else {
-    var updating = browser.tabs.update({url: jsproxy_prefix + "-----" + tab.url});
-    updating.then(onUpdated, onError);
-  }
+
+/*
+Each time a tab is updated, reset the page action for that tab.
+*/
+browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+  initializePageAction(tab);
 });
 
 /*
@@ -157,8 +144,49 @@ function initializePageAction(tab) {
 }
 
 /*
-Each time a tab is updated, reset the page action for that tab.
+Page action click event listener that switches on/off jsproxy for current tab page.
 */
-browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-  initializePageAction(tab);
+browser.pageAction.onClicked.addListener(async function(tab) {
+  var jsproxy_prefix = await getJsproxyPrefix();
+  if (tab.url.slice(0, jsproxy_prefix.length) == jsproxy_prefix) {
+    var updating = browser.tabs.update({url: tab.url.substring(jsproxy_prefix.length+5, tab.url.length)});
+    updating.then(onUpdated, onError);
+  } else {
+    var updating = browser.tabs.update({url: jsproxy_prefix + "-----" + tab.url});
+    updating.then(onUpdated, onError);
+  }
 });
+
+
+/*
+___  ____ ___  _  _ ____ ____ _ _  _ ____    ____ _  _ _  _ ____ ___ _ ____ _  _ ____
+|  \ |___ |__] |  | | __ | __ | |\ | | __    |___ |  | |\ | |     |  | |  | |\ | [__
+|__/ |___ |__] |__| |__] |__] | | \| |__]    |    |__| | \| |___  |  | |__| | \| ___]
+
+*/
+/*
+Called when the tab page has been updated.
+*/
+function onUpdated(tab) {
+  console.log(`Updated tab: ${tab.id}`);
+}
+
+/*
+Called when the item has been created, or when creation failed due to an error.
+We'll just log success/failure here.
+*/
+function onCreated() {
+  if (browser.runtime.lastError) {
+    console.log(`Error: ${browser.runtime.lastError}`);
+  } else {
+    console.log("Item created successfully");
+  }
+}
+
+/*
+Called when there was an error.
+We'll just log the error here.
+*/
+function onError(error) {
+  console.log(`Error: ${error}`);
+}
