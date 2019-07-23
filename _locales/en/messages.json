@@ -19,6 +19,11 @@
     "description": "Title of the context menu item that allows you to search a keyword with Google."
   },
 
+  "menuItemOpenImageWithProxy": {
+    "message": "Open image with jsproxy",
+    "description": "Title of the context menu item that allows you to open an image with jsproxy."
+  },
+
   "pageAction": {
     "message": "Reopen with/without jsproxy",
     "description": "Title of the page action button that allows you to reopen current page with or without jsproxy."

@@ -14,12 +14,11 @@ function restoreOptions() {
     if (res.jsproxy_sandbox_url !== "") {
       document.querySelector("#jsproxy_sandbox_url").value = res.jsproxy_sandbox_url;
     } else {
-      document.querySelector("#jsproxy_sandbox_url").value = "https://jsproxy.cf";
+      document.querySelector("#jsproxy_sandbox_url").value = "https://jsproxy-demo.tk/";
       browser.storage.sync.set({
         jsproxy_sandbox_url: document.querySelector("#jsproxy_sandbox_url").value
       });
     }
-    // document.querySelector("#jsproxy_sandbox_url").value = res.jsproxy_sandbox_url || 'https://jsproxy.gq';
   });
 }
 

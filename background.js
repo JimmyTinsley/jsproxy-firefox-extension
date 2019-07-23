@@ -33,6 +33,12 @@ browser.menus.create({
   contexts: ["selection"]
 }, onCreated);
 
+browser.menus.create({
+  id: "open-image-with-proxy",
+  title: browser.i18n.getMessage("menuItemOpenImageWithProxy"),
+  contexts: ["image"]
+}, onCreated);
+
 /*
 This function obtains jsproxy sandbox url from preferences for further use.
 */
@@ -66,6 +72,16 @@ function searchWithProxy(info, jsproxy_prefix) {
 }
 
 /*
+Open the clicked image with jsproxy by attaching a prefix before the image's source url.
+*/
+function openImageWithJsproxy(info, jsproxy_prefix) {
+  var creating = browser.tabs.create({
+    url: jsproxy_prefix + "-----" + info.srcUrl
+  });
+  creating.then(onCreated, onError);
+}
+
+/*
 The click event listener for menus, where we perform the appropriate action given the
 ID of the menu item that was clicked.
 */
@@ -78,6 +94,8 @@ browser.menus.onClicked.addListener(async function(info) {
     case "search-with-proxy":
       searchWithProxy(info, jsproxy_prefix);
       break;
+    case "open-image-with-proxy":
+      openImageWithJsproxy(info, jsproxy_prefix);
   }
   
 });
