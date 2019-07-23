@@ -4,11 +4,11 @@
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
   "version": "1.2",
-  "homepage_url": "https://github.com/JimmyTinsley/jsproxy-FFEXT",
+  "homepage_url": "https://github.com/JimmyTinsley/jsproxy-firefox-extension",
   "default_locale": "en",
   "applications": {
     "gecko": {
-      "id": "jsproxy-FFEXT@jimmytinsley.com",
+      "id": "jsproxy-firefox-extension@jimmytinsley.com",
       "strict_min_version": "56.0a1"
     }
   },
@@ -36,7 +36,7 @@
   },
 
   "browser_action": {
-    "default_title": "jsproxy-FFEXT"
+    "default_title": "jsproxy-firefox-extension"
   },
 
   "page_action": {
