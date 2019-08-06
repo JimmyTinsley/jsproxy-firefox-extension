@@ -11,19 +11,19 @@ browser.menus.create({
   id: "open-with-proxy",
   title: browser.i18n.getMessage("menuItemOpenWithProxy"),
   contexts: ["link"]
-}, onCreated);
+}, onContextMenuItemCreated);
 
 browser.menus.create({
   id: "search-with-proxy",
   title: browser.i18n.getMessage("menuItemSearchWithProxy"),
   contexts: ["selection"]
-}, onCreated);
+}, onContextMenuItemCreated);
 
 browser.menus.create({
   id: "open-image-with-proxy",
   title: browser.i18n.getMessage("menuItemOpenImageWithProxy"),
   contexts: ["image"]
-}, onCreated);
+}, onContextMenuItemCreated);
 
 /*
 This function loads jsproxy sandbox url from preferences for further use.
@@ -43,48 +43,22 @@ ID of the menu item that was clicked.
 */
 browser.menus.onClicked.addListener(async function(info) {
   var jsproxy_prefix = await getJsproxyPrefix();
+  var postfix;
   switch (info.menuItemId) {
     case "open-with-proxy":
-      openWithProxy(info, jsproxy_prefix);
+      postfix = info.linkUrl;
       break;
     case "search-with-proxy":
-      searchWithProxy(info, jsproxy_prefix);
+      postfix = info.selectionText
       break;
     case "open-image-with-proxy":
-      openImageWithJsproxy(info, jsproxy_prefix);
+      postfix = info.srcUrl
   }
-  
+  var creating = browser.tabs.create({
+    url: jsproxy_prefix + "-----" + postfix
+  });
+  creating.then(onTabCreated, onError);
 });
-
-/*
-Open the clicked link with jsproxy by attaching a prefix before the link's url.
-*/
-function openWithProxy(info, jsproxy_prefix) {
-  var creating = browser.tabs.create({
-    url: jsproxy_prefix + "-----" + info.linkUrl
-  });
-  creating.then(onCreated, onError);
-}
-
-/*
-Search the selected keyword with jsproxy-Google by attaching a prefix before selected text.
-*/
-function searchWithProxy(info, jsproxy_prefix) {
-  var creating = browser.tabs.create({
-    url: jsproxy_prefix + "-----" + info.selectionText
-  });
-  creating.then(onCreated, onError);
-}
-
-/*
-Open the clicked image with jsproxy by attaching a prefix before the image's source url.
-*/
-function openImageWithJsproxy(info, jsproxy_prefix) {
-  var creating = browser.tabs.create({
-    url: jsproxy_prefix + "-----" + info.srcUrl
-  });
-  creating.then(onCreated, onError);
-}
 
 
 /*
@@ -150,10 +124,10 @@ browser.pageAction.onClicked.addListener(async function(tab) {
   var jsproxy_prefix = await getJsproxyPrefix();
   if (tab.url.slice(0, jsproxy_prefix.length) == jsproxy_prefix) {
     var updating = browser.tabs.update({url: tab.url.substring(jsproxy_prefix.length+5, tab.url.length)});
-    updating.then(onUpdated, onError);
+    updating.then(onTabUpdated, onError);
   } else {
     var updating = browser.tabs.update({url: jsproxy_prefix + "-----" + tab.url});
-    updating.then(onUpdated, onError);
+    updating.then(onTabUpdated, onError);
   }
 });
 
@@ -167,15 +141,22 @@ ___  ____ ___  _  _ ____ ____ _ _  _ ____    ____ _  _ _  _ ____ ___ _ ____ _  _
 /*
 Called when the tab page has been updated.
 */
-function onUpdated(tab) {
+function onTabUpdated(tab) {
   console.log(`Updated tab: ${tab.id}`);
+}
+
+/*
+Called when a new tab page has been created.
+*/
+function onTabCreated(tab) {
+  console.log(`Created tab: ${tab.id}`);
 }
 
 /*
 Called when the item has been created, or when creation failed due to an error.
 We'll just log success/failure here.
 */
-function onCreated() {
+function onContextMenuItemCreated() {
   if (browser.runtime.lastError) {
     console.log(`Error: ${browser.runtime.lastError}`);
   } else {
