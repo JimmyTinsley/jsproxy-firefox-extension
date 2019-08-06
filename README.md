@@ -1,9 +1,11 @@
 # jsproxy-firefox-extension
 Firefox extension for [jsproxy](https://github.com/EtherDream/jsproxy).
 
+Chrome version can be found [here](https://github.com/JimmyTinsley/jsproxy-chrome-extension).
+
 ## Before use the extension
 - Make sure you are clear about how to use jsproxy.
-- Click the button on toolbar and set your own jsproxy sandbox url, which was set to `https://jsproxy.cf` by default.
+- Click the button on toolbar and set your own jsproxy sandbox url, which was set to `https://proxy.jimmytinsley.workers.dev/` by default.
 - Open jsproxy page sandbox at least once to initialize service worker.
 
 ## Use
