@@ -14,7 +14,7 @@ function restoreOptions() {
     if (res.jsproxy_sandbox_url !== "") {
       document.querySelector("#jsproxy_sandbox_url").value = res.jsproxy_sandbox_url;
     } else {
-      document.querySelector("#jsproxy_sandbox_url").value = "https://jsproxy.jimmytinsley.workers.dev/";
+      document.querySelector("#jsproxy_sandbox_url").value = "https://jsproxy1.jimmytinsley.workers.dev/";
       browser.storage.sync.set({
         jsproxy_sandbox_url: document.querySelector("#jsproxy_sandbox_url").value
       });
