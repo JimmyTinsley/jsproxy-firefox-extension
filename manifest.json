@@ -9,8 +9,8 @@
   "default_locale": "en",
   "applications": {
     "gecko": {
-      "id": "jsproxy-firefox-extension@jimmytinsley.com",
-      "strict_min_version": "56.0a1"
+      "id": "jsproxy-extension@jimmytinsley.com",
+      "strict_min_version": "59.0"
     }
   },
 
