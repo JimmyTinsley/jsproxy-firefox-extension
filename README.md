@@ -1,5 +1,8 @@
 # jsproxy-firefox-extension
+
 Firefox extension for [jsproxy](https://github.com/EtherDream/jsproxy).
+
+https://addons.mozilla.org/en-US/firefox/addon/jsproxy-extension/
 
 Chrome version can be found [here](https://github.com/JimmyTinsley/jsproxy-chrome-extension).
 
